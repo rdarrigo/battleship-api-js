@@ -9,9 +9,9 @@ The API mainains the state of a game of Battleship and is implemented assuming t
 
 A game can be in three states:
 
-* Setup - players are able to place their ships on their board, no attacks can be launched.
-* Commenced - players can launch attacks, based on their turn, ships cannot be repositioned.
-* Complete - the game is over and can only be reset to start a new game. 
+* 0 = Setup - players are able to place their ships on their board, no attacks can be launched.
+* 1 = Commenced - players can launch attacks, based on their turn, ships cannot be repositioned.
+* 2 = Complete - the game is over and can only be reset to start a new game. 
 
 ## Public methods:
 
@@ -42,10 +42,10 @@ Where:
   
 ## Example usage:
 
-  g = new BattleShip()
+  var g = BattleShip;
   
   // generates a random board for player 1
-  g.randomBoard(BattleShip.PLAYER_ONE); 
+  g.randomBoard(BattleShip.PLAYER_ONE);
   
   // manually place ships for player 2
   g.placeShip(BattleShip.PLAYER_TWO, BattleShip.CARRIER, "E1", BattleShip.NORTH); // Places player 2's CARRIER in E1 facing NORTH i.e. in positions E1, D1, C1, B1, A1
@@ -58,15 +58,15 @@ Where:
   g.placeShip(BattleShip.PLAYER_TWO, BattleShip.CARRIER, "F1", BattleShip.NORTH); // Places player 2's CARRIER in F1 facing NORTH i.e. in positions F1, E1, D1, C1, B1
   
   // check the game status
-  g.gameStatus()
+  g.gameStatus();
   
   // start the game now that both players ships have been placed 
-  g.gameStart()
+  g.gameStart();
   
   // check the response of g.gameStart() or g.gameStatus() to determine who's turn is first
   // presuming it is player two's turn first, launch the first attack
-  g.launchAttack(BattleShip.Player_TWO, "H1") // check the hit parameter in the response to determine a hit or miss
-  g.launchAttack(BattleShip.Player_ONE, "B1") // this will register a hit
+  g.launchAttack(BattleShip.PLAYER_TWO, "H1") // check the hit parameter in the response to determine a hit or miss
+  g.launchAttack(BattleShip.PLAYER_ONE, "B1") // this will register a hit
   
   // ... continue launching attacks until you have hit all of the opposite players ship locations
   // to check the state of a players board at any stage, inspect the corresponding players primaryBoard
@@ -76,3 +76,6 @@ Where:
   
   // to check the location of previous shots fired by player
   g.gameStatus().player[BattleShip.PLAYER_ONE].trackingBoard
+
+  // to restart the game again
+  g.gameReset();
