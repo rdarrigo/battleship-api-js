@@ -42,37 +42,37 @@ Where:
   
 ## Example usage:
 
-g = new BattleShip()
-
-// generates a random board for player 1
-g.randomBoard(BattleShip.PLAYER_ONE); 
-
-// manually place ships for player 2
-g.placeShip(BattleShip.PLAYER_TWO, BattleShip.CARRIER, "E1", BattleShip.NORTH); // Places player 2's CARRIER in E1 facing NORTH i.e. in positions E1, D1, C1, B1, A1
-g.placeShip(BattleShip.PLAYER_TWO, BattleShip.BATTLESHIP, "B2", BattleShip.SOUTH); // Places player 2's BATTLESHIP in E2 facing SOUTH i.e. in positions B2, C2, D2, E2.
-g.placeShip(BattleShip.PLAYER_TWO, BattleShip.SUBMARINE, "A2", BattleShip.EAST); // Places player 2's SUBMARINE in A2 facing EAST i.e. in positions A2, A3, A4
-g.placeShip(BattleShip.PLAYER_TWO, BattleShip.CRUISER, "J10", BattleShip.WEST); // Places player 2's CRUISER in J10 facing WEST i.e. in positions J10, J9
-g.placeShip(BattleShip.PLAYER_TWO, BattleShip.PATROL, "G5", BattleShip.WEST); // Places player 2's PATROL in G5 facing NORTH i.e. in positions G5
-
-// to move a ship already placed
-g.placeShip(BattleShip.PLAYER_TWO, BattleShip.CARRIER, "F1", BattleShip.NORTH); // Places player 2's CARRIER in F1 facing NORTH i.e. in positions F1, E1, D1, C1, B1
-
-// check the game status
-g.gameStatus()
-
-// start the game now that both players ships have been placed 
-g.gameStart()
-
-// check the response of g.gameStart() or g.gameStatus() to determine who's turn is first
-// presuming it is player two's turn first, launch the first attack
-g.launchAttack(BattleShip.Player_TWO, "H1") // check the hit parameter in the response to determine a hit or miss
-g.launchAttack(BattleShip.Player_ONE, "B1") // this will register a hit
-
-// ... continue launching attacks until you have hit all of the opposite players ship locations
-// to check the state of a players board at any stage, inspect the corresponding players primaryBoard
-
-g.gameStatus().player[BattleShip.PLAYER_ONE].primaryBoard
-g.gameStatus().player[BattleShip.PLAYER_TWO].primaryBoard
-
-// to check the location of previous shots fired by player
-g.gameStatus().player[BattleShip.PLAYER_ONE].trackingBoard
+  g = new BattleShip()
+  
+  // generates a random board for player 1
+  g.randomBoard(BattleShip.PLAYER_ONE); 
+  
+  // manually place ships for player 2
+  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.CARRIER, "E1", BattleShip.NORTH); // Places player 2's CARRIER in E1 facing NORTH i.e. in positions E1, D1, C1, B1, A1
+  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.BATTLESHIP, "B2", BattleShip.SOUTH); // Places player 2's BATTLESHIP in E2 facing SOUTH i.e. in positions B2, C2, D2, E2.
+  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.SUBMARINE, "A2", BattleShip.EAST); // Places player 2's SUBMARINE in A2 facing EAST i.e. in positions A2, A3, A4
+  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.CRUISER, "J10", BattleShip.WEST); // Places player 2's CRUISER in J10 facing WEST i.e. in positions J10, J9
+  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.PATROL, "G5", BattleShip.WEST); // Places player 2's PATROL in G5 facing NORTH i.e. in positions G5
+  
+  // to move a ship already placed
+  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.CARRIER, "F1", BattleShip.NORTH); // Places player 2's CARRIER in F1 facing NORTH i.e. in positions F1, E1, D1, C1, B1
+  
+  // check the game status
+  g.gameStatus()
+  
+  // start the game now that both players ships have been placed 
+  g.gameStart()
+  
+  // check the response of g.gameStart() or g.gameStatus() to determine who's turn is first
+  // presuming it is player two's turn first, launch the first attack
+  g.launchAttack(BattleShip.Player_TWO, "H1") // check the hit parameter in the response to determine a hit or miss
+  g.launchAttack(BattleShip.Player_ONE, "B1") // this will register a hit
+  
+  // ... continue launching attacks until you have hit all of the opposite players ship locations
+  // to check the state of a players board at any stage, inspect the corresponding players primaryBoard
+    
+  g.gameStatus().player[BattleShip.PLAYER_ONE].primaryBoard
+  g.gameStatus().player[BattleShip.PLAYER_TWO].primaryBoard
+  
+  // to check the location of previous shots fired by player
+  g.gameStatus().player[BattleShip.PLAYER_ONE].trackingBoard
