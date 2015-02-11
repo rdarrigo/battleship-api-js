@@ -1,26 +1,29 @@
 var BattleShip = (function () {
 
-    this.state              = {}
+    this.state              = {};
     this.state.SETUP        = 0;
     this.state.COMMENCED    = 1;
     this.state.COMPLETE     = 2;
 
     this.game               = {};
-    this.game.WIDTH         = 5;
-    this.game.HEIGHT        = 5;
+    this.game.WIDTH         = 10;
+    this.game.HEIGHT        = 10;
     this.game.PLAYERS       = 2;
     this.game.player_turn   = undefined;
     this.game.state         = 0;
     this.game.winner        = undefined;
 
-    this.ship               = {}
+    this.player             = {};
+    this.player.ONE         = 0;
+    this.player.TWO         = 1;
+    this.ship               = {};
     this.ship.CARRIER       = 0;
     this.ship.BATTLESHIP    = 1;
     this.ship.SUBMARINE     = 2;
     this.ship.CRUISER       = 3;
     this.ship.PATROL        = 4;
 
-    this.direction          = {}
+    this.direction          = {};
     this.direction.NORTH    = "N";
     this.direction.SOUTH    = "S";
     this.direction.EAST     = "E";
@@ -36,7 +39,7 @@ var BattleShip = (function () {
             , "GAME_COMMENCED"          : 1
             , "GAME_NOT_COMMENCED"      : 2
             , "GAME_SHIPS_NOT_PLACED"   : 3
-            , "PLAYER_INVALUD"          : 10
+            , "PLAYER_INVALID"          : 10
             , "PLAYER_NOT_YOUR_TURN"    : 11
             , "POSITION_OUT_OF_BOUNDS"  : 20
             , "DIRECTION_INVALID"       : 21
@@ -75,10 +78,10 @@ var BattleShip = (function () {
         for (var p = 0; p < game.PLAYERS; p++) {
             // Ships must be placed in descending length order to ensure 
             fleet[p]    = [
-                //  new Ship("carrier"    , 1, 5)
-                //, new Ship("battleship" , 1, 4)
-                //, new Ship("submarine"  , 1, 3)
-                 new Ship("cruiser"    , 1, 2)
+                  new Ship("carrier"    , 1, 5)
+                , new Ship("battleship" , 1, 4)
+                , new Ship("submarine"  , 1, 3)
+                , new Ship("cruiser"    , 1, 2)
                 , new Ship("patrol"     , 1, 1)
             ];
             this.layout[p]          = {};
@@ -305,8 +308,7 @@ var BattleShip = (function () {
                 break;
         }
 
-        // This isn't a great way to fail...
-
+        // This isn't a great way to fail, but will do
         if (coords.length == fleet[player][ship].length) {
 
             // remove the old ships coordinates
@@ -358,10 +360,12 @@ var BattleShip = (function () {
     };
 
     
+    // Refresh the game state and determine if there has been a winner
     var refreshGameState = function () {
         var player          = this.game.player_turn; 
         var opposingPlayer  = getOpposition(player);
 
+        // check all ship coordinates for the opposing player and if all have been hit by the current player
         for (var s = 0; s < fleet[opposingPlayer].length; s++) {
             for (var c = 0; c < fleet[opposingPlayer][s].coords.length; c++) {
                 coords = fleet[opposingPlayer][s].coords[c];
@@ -379,10 +383,10 @@ var BattleShip = (function () {
         return true;
     };
 
-    // 
+    // Attempts to fire an attack at a given location
     var fire = function (player, x, y) {
         if (this.game.state != this.state.COMMENCED)    return this.status.code.GAME_NOT_COMMENCED;
-        if (!checkValidPlayer(player))                  return this.status.code.INVALID_PLAYER;
+        if (!checkValidPlayer(player))                  return this.status.code.PLAYER_INVALID;
         if (this.game.player_turn != player)            return this.status.code.PLAYER_NOT_YOUR_TURN;
 
         // out of bounds
@@ -391,12 +395,12 @@ var BattleShip = (function () {
             ||  x >= game.WIDTH
             ||  y >= game.HEIGHT) return this.status.code.POSITION_OUT_OF_BOUNDS;
 
+        // registers the position of the shot if it hasn't been bombed before
         if (shots[player].indexOf(x.toString() + "," + y.toString()) == -1) {
             shots[player].push(x.toString() + "," + y.toString());
         }
 
-        // get next player and update turn
-        var opposingPlayer = getOpposition(player);
+        // refresh game state and update the next turn
         refreshGameState();
         nextTurn();
 
@@ -424,7 +428,9 @@ var BattleShip = (function () {
     };
 
     return {
-          STATE_SETUP       : this.state.SETUP
+          PLAYER_ONE        : this.player.ONE
+        , PLAYER_TWO        : this.player.TWO
+        , STATE_SETUP       : this.state.SETUP
         , STATE_COMMENCED   : this.state.COMMENCED
         , STATE_COMPLETE    : this.state.COMPLETE
         , CARRIER           : this.ship.CARRIER
@@ -480,7 +486,7 @@ var BattleShip = (function () {
                     break;
             }
         }
-        , gameRestart:function() {
+        , gameReset:function() {
             return formatAPIResponse(
                 newGame()
             );
@@ -491,20 +497,23 @@ var BattleShip = (function () {
                 place(player, ship, coords.x, coords.y, d)
             );
         }
-        , launchAttack:function(player, position) {
+        , launchAttack:function(fromPlayer, position) {
             var coords      = positionToCoords(position);
             var response    = formatAPIResponse (
                 // need to actually check this response before doing anything further
-                fire(player, coords.x, coords.y)
+                fire(fromPlayer, coords.x, coords.y)
             )
-            var opposingPlayer = getOpposition(player); 
-
-            // Add in the status of the attack i.e. hit or miss
-            response.hit = typeof layout[opposingPlayer][coords.x.toString() + "," + coords.y.toString()] != 'undefined';
             
-            // Custom message if game is complete
-            if (isGameComplete()) {
-                response.message = "Well done player " + player + ".";
+            if (response.success) {
+                var opposingPlayer = getOpposition(fromPlayer); 
+
+                // Add in the status of the attack i.e. hit or miss
+                response.hit = typeof layout[opposingPlayer][coords.x.toString() + "," + coords.y.toString()] != 'undefined';
+                
+                // Custom message if game is complete
+                if (isGameComplete()) {
+                    response.message = "Well done player " + fromPlayer + ".";
+                }
             }
 
             return response;
@@ -512,59 +521,3 @@ var BattleShip = (function () {
     }
 
 }());
-
-//console.log(BattleShip);
-
-var g = BattleShip;
-
-//console.log(g.randomBoard(0));
-//console.log(g.randomBoard(1));
-//console.log(g.gameStart());
-//g.createBoard(0)
-//g.createGame();
-//console.log(g.randomBoard(0));
-//console.log(g.randomBoard(1));
-//console.log(g.placeShip(0, 0, "A1", "S"));
-
-//g.randomBoard(1);
-//g.status();
-//g.startGame();
-//console.log(g.launchAttack(0,"A1"));
-//console.log(g.launchAttack(1,"A1"));
-//console.log(g.launchAttack(0,"B1"));
-//console.log(g.launchAttack(1,"B1"));
-//console.log(g.launchAttack(0,"Z20"));
-//g.attack(1,0,0);
-//g.attack(0,1,1);
-//g.attack(1,1,1);
-
-//console.log(g.placeShip(0, 4, "F1", "S"));
-//g.placeShip(1, 0, 0, 0, "S")
-
-//console.log(g.gameStatus().player[0]);
-//console.log(g.gameStatus().player[1]);
-//g.createBoard(1);
-//g.randomBoard(1);
-//g.randomBoard(1);
-//
-//g.startGame();
-//g.placeShip(0, 0, 0, 0, "S")
-//g.placeShip(0, 1, 1, 1, "E")
-//g.placeShip(0, 2, 9, 9, "N")
-//g.placeShip(0, 3, 5, 5, "W")
-//g.placeShip(0, 4, 9, 2, "N")
-//
-//g.placeShip(1, 0, 4, 4, "S")
-//g.placeShip(1, 1, 0, 1, "E")
-//g.placeShip(1, 2, 9, 9, "N")
-//g.placeShip(1, 3, 0, 8, "S")
-//g.placeShip(1, 4, 9, 2, "N")
-//g.placeShip(1, 4, 8, 2, "N")
-//g.gameState();
-//var http = require('http');
-//
-//var server = http.createServer(function(req, res) {
-//      res.writeHead(200);
-//        res.end('Hello Http');
-//});
-//server.listen(8080);
