@@ -376,9 +376,9 @@ var BattleShip = (function () {
             }
         }
 
-        this.game.state     = this.state.COMPLETE;
-        this.game.turn      = undefined;
-        this.game.winner    = player;
+        this.game.state         = this.state.COMPLETE;
+        this.game.player_turn   = undefined;
+        this.game.winner        = player;
 
         return true;
     };
@@ -512,7 +512,7 @@ var BattleShip = (function () {
                 
                 // Custom message if game is complete
                 if (isGameComplete()) {
-                    response.message = "Well done player " + fromPlayer + ".";
+                    response.message = "Game Over. Well done player " + fromPlayer + ".";
                 }
             }
 
