@@ -5,7 +5,7 @@ The API mainains the state of a game of Battleship and is implemented assuming t
 
 * 2 players
 * 10 x 10 playing grid (supports up to 26 x 26 grid)
-* 5 x Ships (1 x 5, 1 x 4, 1 x 3, 1 x 2 & 1 x 1)
+* 5 x Ships (Carrier: 1 x 5, BattleShip: 1 x 4, Submarine: 1 x 3, Cruiser: 1 x 2, Patrol: 1 x 1)
 
 All public methods return a consistent base response containing:
 
@@ -46,23 +46,23 @@ Where:
   
 ## Public properties:
 - Player identifier
-  - BattleShip.PLAYER_ONE
-  - BattleShip.PLAYER_TWO
+  - BattleShip.PLAYER_ONE = 0
+  - BattleShip.PLAYER_TWO = 1
 - Ship identifier
-  - BattleShip.CARRIER	  - 1 x 5
-  - Battleship.BATTLESHIP	- 1 x 4
-  - BattleShip.SUBMARINE	- 1 x 3
-  - BattleShip.CRUISER	  - 1 x 2
-  - BattleShip.PATROL	    - 1 x 1
+  - BattleShip.CARRIER	  = 0   (1 x 5 ship)
+  - Battleship.BATTLESHIP	= 1   (1 x 4 ship)
+  - BattleShip.SUBMARINE	= 2   (1 x 3 ship)
+  - BattleShip.CRUISER	  = 3   (1 x 2 ship)
+  - BattleShip.PATROL	    = 4   (1 x 1 ship)
 - Direction
-  - BattleShip.NORTH
-  - BattleShip.SOUTH
-  - BattleShip.EAST
-  - BattleShip.WEST
+  - BattleShip.NORTH      = "N"
+  - BattleShip.SOUTH      = "S"
+  - BattleShip.EAST       = "E"
+  - BattleShip.WEST       = "W"
 - Game state
-  - BattleShip.SETUP
-  - BattleShip.COMMENCED
-  - BattleShip.COMPLETE
+  - BattleShip.SETUP      = 0
+  - BattleShip.COMMENCED  = 1
+  - BattleShip.COMPLETE   = 2
 
 ## Example usage
 
