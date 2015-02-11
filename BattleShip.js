@@ -33,7 +33,7 @@ var BattleShip = (function () {
     this.layout             = [];
     this.shots              = [];
 
-    this.status = {
+    this.response = {
           "code" : {
               "SUCCESS"                 : 0
             , "GAME_COMMENCED"          : 1
@@ -91,7 +91,7 @@ var BattleShip = (function () {
             this.game.winner        = undefined;
         }
 
-        return this.status.code.SUCCESS;
+        return this.response.code.SUCCESS;
     };
 
     newGame();
@@ -100,8 +100,8 @@ var BattleShip = (function () {
     function formatAPIResponse(code) {
         var position;
         var response = {
-              "success" : (code == this.status.code.SUCCESS) ? true : false
-            , "message" : this.status.message[code] || ""
+              "success" : (code == this.response.code.SUCCESS) ? true : false
+            , "message" : this.response.message[code] || ""
             , "state"   : this.game.state
             , "turn"    : this.game.player_turn
             , "winner"  : this.game.winner
@@ -150,15 +150,15 @@ var BattleShip = (function () {
 
     // Reset a players layout
     function clearLayout(player) {
-        if (!checkValidPlayer(player))              return this.status.code.INVALID_PLAYER;
-        if (this.game.state != this.state.SETUP)    return this.status.code.GAME_COMMENCED;
+        if (!checkValidPlayer(player))              return this.response.code.INVALID_PLAYER;
+        if (this.game.state != this.state.SETUP)    return this.response.code.GAME_COMMENCED;
                     
         layout[player] = {};
         for (var s = 0; s < fleet[player].length; s ++) {
             fleet[player][s].coords  = [];
         }
 
-        return this.status.code.SUCCESS;
+        return this.response.code.SUCCESS;
     };
 
     // Returns the opposing player 
@@ -224,9 +224,9 @@ var BattleShip = (function () {
 
     // Place a ship on a players board
     function place(player, ship, x, y, d) {
-        if (this.game.state != this.state.SETUP)    return this.status.code.GAME_COMMENCED;
-        if (!checkValidPlayer(player))              return this.status.code.INVALID_PLAYER;
-        if (ship > fleet[player].length)            return this.status.code.SHIP_INVALID; 
+        if (this.game.state != this.state.SETUP)    return this.response.code.GAME_COMMENCED;
+        if (!checkValidPlayer(player))              return this.response.code.INVALID_PLAYER;
+        if (ship > fleet[player].length)            return this.response.code.SHIP_INVALID; 
         
         // Calculate bounds of the ship starting from the most North / East co-ordinate - transforming ship direction to South or East 
 
@@ -265,14 +265,14 @@ var BattleShip = (function () {
                 end.y       = y + fleet[player][ship].length - 1;
                 break;
             default :
-                return this.status.code.DIRECTION_INVALID;
+                return this.response.code.DIRECTION_INVALID;
         }
         
         // out of bounds
         if  (  start.x < 0 
             || start.y < 0 
             || end.x >= game.WIDTH
-            || end.y >= game.HEIGHT) { return this.status.code.POSITION_OUT_OF_BOUNDS; }
+            || end.y >= game.HEIGHT) { return this.response.code.POSITION_OUT_OF_BOUNDS; }
 
         var coord;
 
@@ -287,7 +287,7 @@ var BattleShip = (function () {
                         || layout[player][coord] == ship) {
                         coords.push(coord);
                     } else {
-                        return this.status.code.SHIP_POSITION_INVALID;
+                        return this.response.code.SHIP_POSITION_INVALID;
                     }
                     current.x++;
                 }
@@ -301,7 +301,7 @@ var BattleShip = (function () {
                         || layout[player][coord] == ship) {
                         coords.push(coord);
                     } else {
-                        return this.status.code.SHIP_POSITION_INVALID;
+                        return this.response.code.SHIP_POSITION_INVALID;
                     }
                     current.y++;
                 }
@@ -322,16 +322,16 @@ var BattleShip = (function () {
 
             fleet[player][ship].coords = coords;
 
-            return this.status.code.SUCCESS;
+            return this.response.code.SUCCESS;
         } else {
-            return this.status.code.SHIP_POSITION_INVALID;
+            return this.response.code.SHIP_POSITION_INVALID;
         };
     };
 
     // Generate random ship layout for player
     function randomLayout(player) {
             
-        if (this.game.state != this.state.SETUP) return this.status.code.GAME_COMMENCED;
+        if (this.game.state != this.state.SETUP) return this.response.code.GAME_COMMENCED;
 
         clearLayout(player);
         
@@ -353,10 +353,10 @@ var BattleShip = (function () {
                 x = Math.floor((Math.random() * game.WIDTH));
                 y = Math.floor((Math.random() * game.HEIGHT));
     
-            } while (place(player, s, x, y, d) != this.status.code.SUCCESS);
+            } while (place(player, s, x, y, d) != this.response.code.SUCCESS);
         }
 
-        return this.status.code.SUCCESS;
+        return this.response.code.SUCCESS;
     };
 
     
@@ -385,15 +385,15 @@ var BattleShip = (function () {
 
     // Attempts to fire an attack at a given location
     var fire = function (player, x, y) {
-        if (this.game.state != this.state.COMMENCED)    return this.status.code.GAME_NOT_COMMENCED;
-        if (!checkValidPlayer(player))                  return this.status.code.PLAYER_INVALID;
-        if (this.game.player_turn != player)            return this.status.code.PLAYER_NOT_YOUR_TURN;
+        if (this.game.state != this.state.COMMENCED)    return this.response.code.GAME_NOT_COMMENCED;
+        if (!checkValidPlayer(player))                  return this.response.code.PLAYER_INVALID;
+        if (this.game.player_turn != player)            return this.response.code.PLAYER_NOT_YOUR_TURN;
 
         // out of bounds
         if (    x < 0
             ||  y < 0
             ||  x >= game.WIDTH
-            ||  y >= game.HEIGHT) return this.status.code.POSITION_OUT_OF_BOUNDS;
+            ||  y >= game.HEIGHT) return this.response.code.POSITION_OUT_OF_BOUNDS;
 
         // registers the position of the shot if it hasn't been bombed before
         if (shots[player].indexOf(x.toString() + "," + y.toString()) == -1) {
@@ -404,7 +404,7 @@ var BattleShip = (function () {
         refreshGameState();
         nextTurn();
 
-        return this.status.code.SUCCESS;
+        return this.response.code.SUCCESS;
     };
 
     // Check that all player ships have been placed
@@ -454,7 +454,7 @@ var BattleShip = (function () {
         }
         , gameStatus:function() {
             return formatAPIResponse(
-                status.code.SUCCESS
+                response.code.SUCCESS
             );
         }
         , gameStart:function() {
@@ -467,11 +467,11 @@ var BattleShip = (function () {
                         game.player_turn    = Math.floor((Math.random() * 2));
 
                         return formatAPIResponse(
-                            status.code.SUCCESS
+                            response.code.SUCCESS
                         );
                     } else {
                         return formatAPIResponse(
-                            status.code.GAME_SHIPS_NOT_PLACED
+                            response.code.GAME_SHIPS_NOT_PLACED
                         );
                     };
 
@@ -481,7 +481,7 @@ var BattleShip = (function () {
                 case state.COMPLETE :
                     // incorect response
                     return formatAPIResponse(
-                        status.code.GAME_NOT_COMMENCED
+                        response.code.GAME_NOT_COMMENCED
                     );
                     break;
             }
