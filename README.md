@@ -41,7 +41,7 @@ Where:
   - BattleShip.WEST;
   
 ## Example usage:
-
+```
   var g = BattleShip;
   
   // generates a random board for player 1
@@ -79,3 +79,4 @@ Where:
 
   // to restart the game again
   g.gameReset();
+```
