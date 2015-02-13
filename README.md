@@ -49,11 +49,7 @@ Where:
   - BattleShip.PLAYER_ONE = 0
   - BattleShip.PLAYER_TWO = 1
 - Ship identifier
-  - BattleShip.CARRIER	  = 0   (1 x 5 ship)
-  - Battleship.BATTLESHIP	= 1   (1 x 4 ship)
-  - BattleShip.SUBMARINE	= 2   (1 x 3 ship)
-  - BattleShip.CRUISER	  = 3   (1 x 2 ship)
-  - BattleShip.PATROL	    = 4   (1 x 1 ship)
+  - BattleShip.fleet	  = 0   //Access to the fleet of ship identifiers
 - Direction
   - BattleShip.NORTH      = "N"
   - BattleShip.SOUTH      = "S"
@@ -81,23 +77,23 @@ Example interactions with the API's public methods:
   
   // manually place ships for player 2
   // place player 2's CARRIER in E1 facing NORTH i.e. in positions E1, D1, C1, B1, A1
-  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.CARRIER, "E1", BattleShip.NORTH); 
+  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.fleet.CARRIER, "E1", BattleShip.NORTH); 
   
   // place player 2's BATTLESHIP in E2 facing SOUTH i.e. in positions B2, C2, D2, E2.
-  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.BATTLESHIP, "B2", BattleShip.SOUTH);
+  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.fleet.BATTLESHIP, "B2", BattleShip.SOUTH);
   
   // place player 2's SUBMARINE in A2 facing EAST i.e. in positions A2, A3, A4
-  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.SUBMARINE, "A2", BattleShip.EAST);
+  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.fleet.SUBMARINE, "A2", BattleShip.EAST);
 
   // places player 2's CRUISER in J10 facing WEST i.e. in positions J10, J9
-  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.CRUISER, "J10", BattleShip.WEST);
+  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.fleet.CRUISER, "J10", BattleShip.WEST);
   
   // places player 2's PATROL in G5 facing NORTH i.e. in positions G5
-  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.PATROL, "G5", BattleShip.WEST);
+  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.fleet.PATROL, "G5", BattleShip.WEST);
   
   // to move a ship already placed
   // places player 2's CARRIER in F1 facing NORTH i.e. in positions F1, E1, D1, C1, B1
-  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.CARRIER, "F1", BattleShip.NORTH); 
+  g.placeShip(BattleShip.PLAYER_TWO, BattleShip.fleet.CARRIER, "F1", BattleShip.NORTH); 
   
   // check the game status
   g.gameStatus();
