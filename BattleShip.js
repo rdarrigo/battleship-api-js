@@ -9,6 +9,15 @@ var BattleShip = (function () {
     this.game.WIDTH         = 10;
     this.game.HEIGHT        = 10;
     this.game.PLAYERS       = 2;
+    this.game.FLEET    = [
+          new Ship("carrier"    , 1, 5)
+        , new Ship("battleship" , 1, 4)
+        , new Ship("submarine"  , 1, 3)
+        , new Ship("cruiser"    , 1, 2)
+        , new Ship("patrol_1"   , 1, 1)
+        , new Ship("patrol_2"   , 1, 1)
+    ];
+
     this.game.player_turn   = undefined;
     this.game.state         = 0;
     this.game.winner        = undefined;
@@ -17,11 +26,6 @@ var BattleShip = (function () {
     this.player.ONE         = 0;
     this.player.TWO         = 1;
     this.ship               = {};
-    this.ship.CARRIER       = 0;
-    this.ship.BATTLESHIP    = 1;
-    this.ship.SUBMARINE     = 2;
-    this.ship.CRUISER       = 3;
-    this.ship.PATROL        = 4;
 
     this.direction          = {};
     this.direction.NORTH    = "N";
@@ -77,13 +81,13 @@ var BattleShip = (function () {
     function newGame() {
         for (var p = 0; p < game.PLAYERS; p++) {
             // Ships must be placed in descending length order to ensure 
-            fleet[p]    = [
-                  new Ship("carrier"    , 1, 5)
-                , new Ship("battleship" , 1, 4)
-                , new Ship("submarine"  , 1, 3)
-                , new Ship("cruiser"    , 1, 2)
-                , new Ship("patrol"     , 1, 1)
-            ];
+            var f = this.game.FLEET;
+
+            for (var s = 0; s < f.length; s++) {
+                this.ship[f[s].name.toUpperCase()] = s;
+            }
+
+            fleet[p]                = f;
             this.layout[p]          = {};
             this.shots[p]           = [];
             this.game.state         = this.state.SETUP;
@@ -433,11 +437,7 @@ var BattleShip = (function () {
         , STATE_SETUP       : this.state.SETUP
         , STATE_COMMENCED   : this.state.COMMENCED
         , STATE_COMPLETE    : this.state.COMPLETE
-        , CARRIER           : this.ship.CARRIER
-        , BATTLESHIP        : this.ship.BATTLESHIP
-        , SUBMARINE         : this.ship.SUBMARINE
-        , CRUISER           : this.ship.CRUISER
-        , PATROL            : this.ship.PATROL
+        , fleet             : this.ship
         , NORTH             : this.direction.NORTH
         , SOUTH             : this.direction.SOUTH
         , EAST              : this.direction.EAST
